@@ -14,6 +14,40 @@ A simple semantic versioning CLI tool with helpers for common semver operations.
 go build -o semver
 ```
 
+## Docker
+
+A Docker image is available for running semver in a containerized environment.
+
+### Build the image
+
+```bash
+docker build -t semver:latest .
+```
+
+### Run in Docker
+
+```bash
+# Sort versions
+echo -e "3.0.0\n1.5.0\n2.1.0" | docker run --rm -i semver:latest sort
+
+# Filter versions
+echo -e "1.0.0\n1.5.0\n2.0.0" | docker run --rm -i semver:latest filter "^1.0.0"
+
+# Find latest version
+echo -e "1.0.0\n3.5.2\n2.1.0" | docker run --rm -i semver:latest latest
+```
+
+The Docker image is Alpine-based (16.4MB) and includes bash and jq for scripting purposes.
+
+### Pre-built images
+
+Pre-built images are automatically released to GitHub Container Registry (ghcr.io) for every tag.
+
+```bash
+docker pull ghcr.io/trevex/semver:v0.1.0
+docker pull ghcr.io/trevex/semver:latest
+```
+
 ## Usage
 
 ### sort
