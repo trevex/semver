@@ -1,4 +1,4 @@
-name: goreleaser
+name: Release Go Binaries
 
 on:
   pull_request:
