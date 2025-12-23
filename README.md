@@ -84,6 +84,20 @@ Output:
 1.5.0
 ```
 
+#### Ignoring invalid versions
+
+By default, filter fails if any input line is not a valid semver. Use the `--ignore-invalid` (or `-i`) flag to skip invalid lines:
+
+```bash
+echo -e "1.0.0\ninvalid\n1.5.0\nbad-version\n2.0.0" | ./semver filter "^1.0.0" --ignore-invalid
+```
+
+Output:
+```
+1.0.0
+1.5.0
+```
+
 ### latest
 
 Find the highest version from stdin:

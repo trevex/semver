@@ -80,3 +80,70 @@ func TestFilterVersions(t *testing.T) {
 		})
 	}
 }
+
+func TestReadVersionsFromStdinWithOptions(t *testing.T) {
+	tests := []struct {
+		name          string
+		input         []string
+		ignoreInvalid bool
+		wantLen       int
+		wantErr       bool
+	}{
+		{
+			name:          "valid versions",
+			input:         []string{"1.0.0", "2.1.0", "1.5.0"},
+			ignoreInvalid: false,
+			wantLen:       3,
+			wantErr:       false,
+		},
+		{
+			name:          "invalid version with ignoreInvalid=false",
+			input:         []string{"1.0.0", "invalid", "2.1.0"},
+			ignoreInvalid: false,
+			wantLen:       0,
+			wantErr:       true,
+		},
+		{
+			name:          "invalid version with ignoreInvalid=true",
+			input:         []string{"1.0.0", "invalid", "2.1.0"},
+			ignoreInvalid: true,
+			wantLen:       2,
+			wantErr:       false,
+		},
+		{
+			name:          "multiple invalid versions with ignoreInvalid=true",
+			input:         []string{"1.0.0", "not-semver", "2.1.0", "bad-version", "1.5.0"},
+			ignoreInvalid: true,
+			wantLen:       3,
+			wantErr:       false,
+		},
+		{
+			name:          "empty lines are always skipped",
+			input:         []string{"1.0.0", "", "2.1.0", "", "1.5.0"},
+			ignoreInvalid: false,
+			wantLen:       3,
+			wantErr:       false,
+		},
+		{
+			name:          "only invalid versions with ignoreInvalid=true returns empty",
+			input:         []string{"invalid1", "invalid2", "invalid3"},
+			ignoreInvalid: true,
+			wantLen:       0,
+			wantErr:       false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			r := strings.NewReader(strings.Join(tt.input, "\n"))
+			versions, err := readVersionsFromStdinWithOptions(r, tt.ignoreInvalid)
+
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Len(t, versions, tt.wantLen)
+			}
+		})
+	}
+}
