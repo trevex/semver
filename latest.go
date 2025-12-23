@@ -30,7 +30,7 @@ func latestAction(ctx context.Context, cmd *cli.Command) error {
 		return fmt.Errorf("failed to find latest version: %w", err)
 	}
 
-	fmt.Println(latest.Original())
+	fmt.Print(latest.Original())
 
 	return nil
 }
